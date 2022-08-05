@@ -52,7 +52,6 @@ public class Player : MonoBehaviour
         //Jump
         if (canJump && fixedJoystick.Vertical > 0.6f)
         {
-            Debug.Log("jump");
             canJump = false;
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
