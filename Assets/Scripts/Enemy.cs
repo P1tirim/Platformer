@@ -27,9 +27,21 @@ public class Enemy : MonoBehaviour
         direction = player.transform.position - transform.position;
     }
 
-    void FixedUpdate()
+    public void FixedUpdate()
     {
+        //Move enemy to the player
         rb.MovePosition(rb.position + direction * Time.fixedDeltaTime);
+    }
+
+
+    public void Attack(string zone)
+    {
+
+    }
+
+    public void ApplyDamage(float damage)
+    {
+
     }
 
     //Create enemy and add in list

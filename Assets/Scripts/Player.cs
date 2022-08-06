@@ -86,6 +86,7 @@ public class Player : MonoBehaviour
                     Enemy.EnemyClass enemy = Global.listEnemy.Find(f => f.enemyObject == Global.objectsInAttackZones[i].obj);
                     enemy.currentHealth -= 5;
                     if (enemy.currentHealth <= 0) Destroy(enemy.enemyObject);
+                    
                 }
             }
             

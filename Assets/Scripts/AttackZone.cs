@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class AttackZone : MonoBehaviour
 {
+    private Enemy enemyScript;
+    private Rigidbody2D rbEnemy;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        enemyScript =transform.parent.GetComponent<Enemy>();
+        rbEnemy = transform.parent.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
-    //if enemy in zone of attack, add enemy in list
+
+    
     void OnTriggerEnter2D(Collider2D collision)
     {
+        //if enemy in zone of attack, add enemy in list
+
         if (collision.transform.tag == "Enemy")
         {
             ObjectsInAttackZone objectInAttackZone = new ObjectsInAttackZone();
@@ -32,13 +39,37 @@ public class AttackZone : MonoBehaviour
             objectInAttackZone.Add(collision.gameObject, zone, objectInAttackZone);
 
         }
+
+        //if player in attack zone enemy, enemy stop and start attack
+        if(collision.transform.tag == "Player" && transform.parent.tag == "Enemy")
+        {
+            Debug.Log("stop");
+            rbEnemy.constraints = RigidbodyConstraints2D.FreezePositionX;
+            if (this.gameObject.name == "LeftZone")
+            {
+                enemyScript.Attack("left");
+            }
+            else enemyScript.Attack("right");
+        }
     }
 
-    //if enemy exit out zone, remove enemy from list
+    
     void OnTriggerExit2D(Collider2D collision)
     {
-        ObjectsInAttackZone remove = Global.objectsInAttackZones.Find(f => f.obj == collision.gameObject);
-        Global.objectsInAttackZones.Remove(remove);
+        //if enemy exit zone, remove enemy from list
+
+        if (transform.parent.tag == "Player")
+        {
+            ObjectsInAttackZone remove = Global.objectsInAttackZones.Find(f => f.obj == collision.gameObject);
+            Global.objectsInAttackZones.Remove(remove);
+        }
+        // When player exit zone, enemy can move again
+        else if(transform.parent.tag == "Enemy" && collision.tag == "Player")
+        {
+            rbEnemy.constraints = RigidbodyConstraints2D.None;
+            rbEnemy.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+        
     }
 
     public class ObjectsInAttackZone
