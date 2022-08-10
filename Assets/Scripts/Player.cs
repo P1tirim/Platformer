@@ -5,8 +5,13 @@ public class Player : MonoBehaviour
 {
     public FixedJoystick fixedJoystick;
     Rigidbody2D rb;
-    public float speed;
-    public float jumpForce;
+
+    [SerializeField] private float maxHP;
+    [SerializeField] private float damage;
+
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpForce;
+
     bool canJump = true;
     public GameObject rightZone;
     public GameObject leftZone;
@@ -15,11 +20,18 @@ public class Player : MonoBehaviour
 
     Direction direction = Direction.Right;
 
+    private PlayerClass player;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         btn.onClick.AddListener(delegate { ParameterOnClick(); });
+
+        player = new PlayerClass();
+        player.maxHP = maxHP;
+        player.currentHP = maxHP;
+        player.damage = damage;
     }
 
     // Update is called once per frame
@@ -54,6 +66,17 @@ public class Player : MonoBehaviour
         {
             canJump = false;
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+    }
+
+    //Take damage
+    public void ApplyDamage(float damage)
+    {
+        player.currentHP -= damage;
+        Debug.Log(player.currentHP);
+        if(player.currentHP <= 0)
+        {
+            Debug.Log("game over");
         }
     }
 
@@ -108,5 +131,12 @@ public class Player : MonoBehaviour
     private void ParameterOnClick()
     {
         Attack();
+    }
+
+    class PlayerClass
+    {
+       public float maxHP;
+       public float currentHP;
+       public float damage;
     }
 }

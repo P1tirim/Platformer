@@ -6,6 +6,7 @@ public class AttackZone : MonoBehaviour
 {
     private Enemy enemyScript;
     private Rigidbody2D rbEnemy;
+    bool playerInZone = false;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +21,11 @@ public class AttackZone : MonoBehaviour
         
     }
 
-
+    //if player in attack zone, return true
+    public bool CheckPlayerInZone()
+    {
+        return playerInZone;
+    }
     
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -44,12 +49,13 @@ public class AttackZone : MonoBehaviour
         if(collision.transform.tag == "Player" && transform.parent.tag == "Enemy")
         {
             Debug.Log("stop");
-            rbEnemy.constraints = RigidbodyConstraints2D.FreezePositionX;
+            playerInZone = true;
+            rbEnemy.constraints = RigidbodyConstraints2D.FreezeAll;
             if (this.gameObject.name == "LeftZone")
             {
-                enemyScript.Attack("left");
+                enemyScript.AttackAnimation("left");
             }
-            else enemyScript.Attack("right");
+            else enemyScript.AttackAnimation("right");
         }
     }
 
@@ -66,8 +72,9 @@ public class AttackZone : MonoBehaviour
         // When player exit zone, enemy can move again
         else if(transform.parent.tag == "Enemy" && collision.tag == "Player")
         {
+            playerInZone = false;
             rbEnemy.constraints = RigidbodyConstraints2D.None;
-            rbEnemy.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rbEnemy.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
         }
         
     }
