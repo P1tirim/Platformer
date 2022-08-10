@@ -26,6 +26,7 @@ public class AttackZone : MonoBehaviour
     {
         return playerInZone;
     }
+
     
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -53,9 +54,9 @@ public class AttackZone : MonoBehaviour
             rbEnemy.constraints = RigidbodyConstraints2D.FreezeAll;
             if (this.gameObject.name == "LeftZone")
             {
-                enemyScript.AttackAnimation("left");
+                Global.zone = "left";
             }
-            else enemyScript.AttackAnimation("right");
+            else Global.zone = "right";
         }
     }
 
@@ -73,6 +74,7 @@ public class AttackZone : MonoBehaviour
         else if(transform.parent.tag == "Enemy" && collision.tag == "Player")
         {
             playerInZone = false;
+            Global.zone = "none";
             rbEnemy.constraints = RigidbodyConstraints2D.None;
             rbEnemy.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
         }

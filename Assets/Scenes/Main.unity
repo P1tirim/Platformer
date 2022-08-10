@@ -1082,6 +1082,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   damage: 5
+  cdAttackTime: 2
 --- !u!50 &1058831915
 Rigidbody2D:
   serializedVersion: 4

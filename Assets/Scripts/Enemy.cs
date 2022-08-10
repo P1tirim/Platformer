@@ -7,11 +7,13 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private float maxHealth;
     [SerializeField] private float damage;
+    [SerializeField] private float cdAttackTime;
     private EnemyClass enemy;
     private GameObject player;
     private Rigidbody2D rb;
     private Animator animator;
     private Vector2 direction;
+    private float elapsedTime = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -22,12 +24,16 @@ public class Enemy : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         rb = this.GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        elapsedTime = cdAttackTime;
     }
 
     // Update is called once per frame
     void Update()
     {
         direction = player.transform.position - transform.position;
+        AttackAnimation();
+        elapsedTime += Time.deltaTime;
     }
 
     public void FixedUpdate()
@@ -37,12 +43,18 @@ public class Enemy : MonoBehaviour
     }
 
     //Start attack animation
-    public void AttackAnimation(string zone)
+    public void AttackAnimation()
     {
-        if(zone == "right")
+        if (Global.zone == "right" && elapsedTime >= cdAttackTime)
         {
             animator.Play("EnemyAttackRight");
-        }else animator.Play("EnemyAttackLeft");
+            elapsedTime = 0;
+        }
+        else if (Global.zone == "left" && elapsedTime >= cdAttackTime) 
+        {
+            animator.Play("EnemyAttackLeft");
+            elapsedTime = 0;
+        } 
     }
 
     //Event on animation of attack. Dealing damage to the player
