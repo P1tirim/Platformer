@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float damage;
     [SerializeField] private float cdAttackTime;
     [SerializeField] private float speed;
+    private float pushForce = 400;
     private EnemyClass enemy;
     private GameObject player;
     private Rigidbody2D rb;
@@ -16,6 +17,9 @@ public class Enemy : MonoBehaviour
     private Vector2 direction;
     private float elapsedTime = 0;
     private bool canMove = true;
+    private bool push = false;
+    private Vector2 toPosition;
+    private float elapsedPushTime = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +54,11 @@ public class Enemy : MonoBehaviour
             Vector2 velocityChange = (targetVelocity - velocity);
             rb.AddForce(velocityChange, ForceMode2D.Impulse);
         }
-        
+        if (push)
+        {
+            PushAfterApplyDamage();
+        }
+
     }
 
     public void StopWalking()
@@ -98,9 +106,35 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void ApplyDamage(float damage)
+    //Take damage after player attack
+    public void ApplyDamage(float damage, string direction)
     {
+        enemy.currentHealth -= damage;
+        if (enemy.currentHealth <= 0) Destroy(this.gameObject);
+        
+        if (direction == "right")
+        {
+            toPosition = Vector2.right * pushForce;
+        }
+        else if (direction == "left")
+        {
+            toPosition = Vector2.left * pushForce;
+        }
+        elapsedPushTime = 0f;
+        canMove = false;
+        push = true;
+    }
 
+    //push enemy after player attack
+    void PushAfterApplyDamage()
+    {
+        rb.AddForce(toPosition * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        elapsedPushTime += Time.fixedDeltaTime;
+        if (elapsedPushTime >= 0.5f)
+        {
+            push = false;
+            canMove = true;
+        }
     }
 
     //Create enemy and add in list

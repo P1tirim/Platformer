@@ -64,11 +64,11 @@ public class Player : MonoBehaviour
 
 
             //Turn player
-            if (velocityChange.x < 0)
+            if (fixedJoystick.Horizontal < 0)
             {
                 direction = Direction.Left;
             }
-            else if (velocityChange.x > 0)
+            else if (fixedJoystick.Horizontal > 0)
             {
                 direction = Direction.Right;
             }
@@ -144,29 +144,28 @@ public class Player : MonoBehaviour
     {
         if (direction == Direction.Right)
         {
-            for(int i = 0; i < Global.objectsInAttackZones.Count; i++)
+            for (int i = 0; i < Global.objectsInAttackZones.Count; i++)
             {
                 if (Global.objectsInAttackZones[i].zone == "Right")
                 {
                     Enemy.EnemyClass enemy = Global.listEnemy.Find(f => f.enemyObject == Global.objectsInAttackZones[i].obj);
-                    enemy.currentHealth -= 5;
-                    if (enemy.currentHealth <= 0) Destroy(enemy.enemyObject);
-                    
+                    enemy.enemyObject.GetComponent<Enemy>().ApplyDamage(player.damage, "right");
                 }
             }
-            
-        }else if(direction == Direction.Left)
+
+        }
+        else if (direction == Direction.Left)
         {
             for (int i = 0; i < Global.objectsInAttackZones.Count; i++)
             {
                 if (Global.objectsInAttackZones[i].zone == "Left")
                 {
                     Enemy.EnemyClass enemy = Global.listEnemy.Find(f => f.enemyObject == Global.objectsInAttackZones[i].obj);
-                    enemy.currentHealth -= 5;
-                    if (enemy.currentHealth <= 0) Destroy(enemy.enemyObject);
+                    enemy.enemyObject.GetComponent<Enemy>().ApplyDamage(player.damage, "left");
                 }
             }
         }
+        
     }
 
     //Click button

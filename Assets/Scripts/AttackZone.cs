@@ -43,13 +43,12 @@ public class AttackZone : MonoBehaviour
             else zone = "Right";
 
             objectInAttackZone.Add(collision.gameObject, zone, objectInAttackZone);
-
+            
         }
 
         //if player in attack zone enemy, enemy stop and start attack
         if(collision.transform.tag == "Player" && transform.parent.tag == "Enemy")
         {
-            Debug.Log("stop");
             playerInZone = true;
             enemyScript.StopWalking();
             if (this.gameObject.name == "LeftZone")
