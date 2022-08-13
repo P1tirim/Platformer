@@ -12,7 +12,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
-    bool canJump = true;
+    private bool canJump = true;
+    private bool canMove = true;
+    private bool push = false;
     public GameObject rightZone;
     public GameObject leftZone;
 
@@ -21,6 +23,10 @@ public class Player : MonoBehaviour
     Direction direction = Direction.Right;
 
     private PlayerClass player;
+
+    private float pushForce = 5;
+    private Vector2 toPosition;
+    private float elapsedPushTime = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -43,40 +49,76 @@ public class Player : MonoBehaviour
     
     void FixedUpdate()
     {
-        //Move player in horizontal direction
+        if (canMove)
+        {
 
-        Vector2 targetVelocity = Vector2.right * fixedJoystick.Horizontal;
-        targetVelocity = targetVelocity * speed;
-        Vector2 velocity = rb.velocity;
-        Vector2 velocityChange = (targetVelocity - velocity);
-        velocityChange.y = 0;
-        rb.AddForce(velocityChange, ForceMode2D.Impulse);
-        
-        //Turn player
-        if(velocityChange.x < 0)
-        {
-            direction = Direction.Left;
-        }else if(velocityChange.x > 0)
-        {
-            direction = Direction.Right;
+
+            //Move player in horizontal direction
+
+            Vector2 targetVelocity = Vector2.right * fixedJoystick.Horizontal;
+            targetVelocity = targetVelocity * speed;
+            Vector2 velocity = rb.velocity;
+            Vector2 velocityChange = (targetVelocity - velocity);
+            velocityChange.y = 0;
+            rb.AddForce(velocityChange, ForceMode2D.Impulse);
+
+
+            //Turn player
+            if (velocityChange.x < 0)
+            {
+                direction = Direction.Left;
+            }
+            else if (velocityChange.x > 0)
+            {
+                direction = Direction.Right;
+            }
+
+            //Jump
+            if (canJump && fixedJoystick.Vertical > 0.6f)
+            {
+                canJump = false;
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            }
         }
-
-        //Jump
-        if (canJump && fixedJoystick.Vertical > 0.6f)
+        //Push
+        if (push)
         {
-            canJump = false;
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            PushAfterApplyDamage();
         }
     }
 
     //Take damage
-    public void ApplyDamage(float damage)
+    public void ApplyDamage(float damage, string direction)
     {
         player.currentHP -= damage;
         Debug.Log(player.currentHP);
-        if(player.currentHP <= 0)
+
+        if (direction == "right")
+        {
+            toPosition = Vector2.right * pushForce;
+        }
+        else if (direction == "left") 
+        {
+            toPosition = Vector2.left * pushForce;   
+        }
+        elapsedPushTime = 0f;
+        canMove = false;
+        push = true;
+
+        if (player.currentHP <= 0)
         {
             Debug.Log("game over");
+        }
+    }
+
+    void PushAfterApplyDamage()
+    {
+        rb.AddForce(toPosition * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        elapsedPushTime += Time.fixedDeltaTime;
+        if (elapsedPushTime >= 0.5)
+        {
+            push = false;
+            canMove = true;
         }
     }
 

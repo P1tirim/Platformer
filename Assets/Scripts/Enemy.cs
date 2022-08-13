@@ -64,14 +64,14 @@ public class Enemy : MonoBehaviour
         {
            if(transform.GetChild(1).GetComponent<AttackZone>().CheckPlayerInZone())
             {
-                player.GetComponent<Player>().ApplyDamage(enemy.damage);
+                player.GetComponent<Player>().ApplyDamage(enemy.damage, "right");
             }
         }
         else
         {
             if (transform.GetChild(0).GetComponent<AttackZone>().CheckPlayerInZone())
             {
-                player.GetComponent<Player>().ApplyDamage(enemy.damage);
+                player.GetComponent<Player>().ApplyDamage(enemy.damage, "left");
             }
         }
     }
