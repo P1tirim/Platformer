@@ -1083,6 +1083,7 @@ MonoBehaviour:
   maxHealth: 10
   damage: 5
   cdAttackTime: 2
+  speed: 2
 --- !u!50 &1058831915
 Rigidbody2D:
   serializedVersion: 4
@@ -1103,7 +1104,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 6
 --- !u!95 &1058831916
 Animator:
   serializedVersion: 4

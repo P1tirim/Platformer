@@ -8,12 +8,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float maxHealth;
     [SerializeField] private float damage;
     [SerializeField] private float cdAttackTime;
+    [SerializeField] private float speed;
     private EnemyClass enemy;
     private GameObject player;
     private Rigidbody2D rb;
     private Animator animator;
     private Vector2 direction;
     private float elapsedTime = 0;
+    private bool canMove = true;
 
     // Start is called before the first frame update
     void Start()
@@ -36,10 +38,30 @@ public class Enemy : MonoBehaviour
         elapsedTime += Time.deltaTime;
     }
 
-    public void FixedUpdate()
+    void FixedUpdate()
     {
         //Move enemy to the player
-        rb.MovePosition(rb.position + direction * Time.fixedDeltaTime);
+        if (canMove)
+        {
+            Vector2 targetVelocity;
+            if (transform.position.x > player.transform.position.x) targetVelocity = Vector2.left * speed;
+            else targetVelocity = Vector2.right * speed;
+            Vector2 velocity = rb.velocity;
+            Vector2 velocityChange = (targetVelocity - velocity);
+            rb.AddForce(velocityChange, ForceMode2D.Impulse);
+        }
+        
+    }
+
+    public void StopWalking()
+    {
+        canMove = false;
+        rb.velocity = new Vector2(0, 0);
+    }
+
+    public void StartWalking()
+    {
+        canMove = true;
     }
 
     //Start attack animation

@@ -51,7 +51,7 @@ public class AttackZone : MonoBehaviour
         {
             Debug.Log("stop");
             playerInZone = true;
-            rbEnemy.constraints = RigidbodyConstraints2D.FreezeAll;
+            enemyScript.StopWalking();
             if (this.gameObject.name == "LeftZone")
             {
                 Global.zone = "left";
@@ -75,8 +75,7 @@ public class AttackZone : MonoBehaviour
         {
             playerInZone = false;
             Global.zone = "none";
-            rbEnemy.constraints = RigidbodyConstraints2D.None;
-            rbEnemy.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
+            enemyScript.StartWalking();
         }
         
     }
